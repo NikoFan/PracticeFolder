@@ -1,0 +1,138 @@
+#include <iostream>
+#include <windows.h>
+#include <string>
+#include <vector>
+
+using namespace std;
+
+
+void FiveTask1() {
+    int length = 0, num, maximum;
+    
+    do {
+        cout << "Введите длину для массива: ";
+        cin >> length;
+        if (length <= 0) {
+            cout << "Число слишком маленькое! Повторите свой ввод!\n";
+        }
+    } while (length <= 0);
+    
+    vector<int> vectorArray;
+    for (int i = 0; i < length; i++) {
+        cout << i+1 << " число: ";
+        cin >> num;
+        // Добавление числа
+        vectorArray.push_back(num);
+    }
+    maximum = vectorArray[0];
+    for (int i = 1; i < length; i++) {
+        if (maximum < vectorArray[i]) {
+            maximum = vectorArray[i];
+        }
+    }
+    cout << "Максимальное число: " << maximum << endl;
+
+}
+
+int get_index(vector<string> array, string value) {
+
+    int index = 0;
+    for (int i = 0; i < array.size(); i++) {
+        index = i;
+        if (value < array[i]) {
+            
+            break;
+        }
+        else {
+            index = i + 1;
+        }
+    }
+
+    return index;
+}
+
+void FiveTask2() {
+    vector<string> arrs;
+    int length;
+    string str;
+    cout << "Введите количество строк: ";
+    cin >> length;
+    for (int i = 0; i < length; i++) {
+        cout << "Введите строку " << i + 1 << ": ";
+        cin >> str;
+        if (arrs.size() == 0) {
+            arrs.push_back(str);
+        }
+        else {
+            // получаем индекс для insert
+            auto iterator_to_insert = arrs.cbegin();
+            arrs.insert(iterator_to_insert + get_index(arrs, str), str);
+        }
+    }
+    for (int i = 0; i < length; i++) {
+        cout << i + 1 << "\t" << arrs[i] << endl;
+    }
+}
+
+void FiveTask3() {
+    int num, length=0, maximum;
+    do {
+        cout << "Введите длину для массива: ";
+        cin >> length;
+        if (length <= 0) {
+            cout << "Число слишком маленькое! Повторите свой ввод!\n";
+        }
+    } while (length <= 0);
+
+    // Динамическое выделение
+    int* array = new int[length];
+
+    // Ukazatel'
+    int* ptrNum = array;
+    for (int i = 0; i < length; i++) {
+        cout << i+1<< " число: ";
+        cin >> num;
+
+        // Dobavlenie
+        *ptrNum = num;
+        ptrNum++;
+    }
+
+    // Opyat' v nachalo
+    ptrNum = array;
+    maximum = *ptrNum;
+    ptrNum++;
+    for (int i = 1; i < length; i++) {
+        cout << i + 1 << "\t" << *ptrNum << "\tMax:\t" << maximum << endl;
+        if (maximum < *ptrNum) {
+            maximum = *ptrNum;
+        }
+        ptrNum++;
+    }
+
+    cout << "Максимальное число: " << maximum << endl;
+
+    delete[] array;
+}
+
+
+int main()
+{
+
+    SetConsoleCP(1251);
+    SetConsoleOutputCP(1251);
+
+
+    // 1 Задание
+    // FiveTask1();
+
+    // 2 Задание
+    // FiveTask2();
+
+    // 3 Задание
+    FiveTask3();
+
+    // 4 Задание
+
+    return 0;
+}
