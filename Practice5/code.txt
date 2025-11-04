@@ -8,7 +8,7 @@ using namespace std;
 
 void FiveTask1() {
     int length = 0, num, maximum;
-    
+
     do {
         cout << "Введите длину для массива: ";
         cin >> length;
@@ -16,7 +16,7 @@ void FiveTask1() {
             cout << "Число слишком маленькое! Повторите свой ввод!\n";
         }
     } while (length <= 0);
-    
+
     vector<int> vectorArray;
     for (int i = 0; i < length; i++) {
         cout << i+1 << " число: ";
@@ -40,7 +40,7 @@ int get_index(vector<string> array, string value) {
     for (int i = 0; i < array.size(); i++) {
         index = i;
         if (value < array[i]) {
-            
+
             break;
         }
         else {
@@ -116,6 +116,118 @@ void FiveTask3() {
 }
 
 
+double rowCalculatingFunction(double** copiedMatrixArg, int matrixLengthArg, int currRow, double startDetCount) {
+    cout << "\n--------------------------------------\n";
+    // Вывод матрицы
+    for (int i = 0; i < matrixLengthArg; i++) {
+        for (int j = 0; j < matrixLengthArg; j++) {
+            cout << copiedMatrixArg[i][j] << "\t";
+        }
+        cout << endl;
+    }
+
+    // Матрица пройдена
+    if (currRow == matrixLengthArg) {
+        return startDetCount;
+    }
+
+    // Ведущий эеоемент строки
+    int rowWithMainElement = -1;
+    for (int k = currRow; k < matrixLengthArg; k++) {
+        if (abs(copiedMatrixArg[k][currRow]) > 1e-12) {
+            // Если ошибка при округлении числа
+            rowWithMainElement = k;
+            break;
+        }
+    }
+
+    // Последний элемент 0, значит строка нулевая ( типо мы прошли всю строку и не нашли не нулевой элемент)
+    if (rowWithMainElement == -1) {
+        return 0.0;
+    }
+
+    double newDet = startDetCount;
+    if (rowWithMainElement != currRow) {
+        for (int j = 0; j < matrixLengthArg; j++) {
+            // Изменение прорядка строк
+            swap(copiedMatrixArg[currRow][j], copiedMatrixArg[rowWithMainElement][j]);
+        }
+        // Изменение знака определителя
+        newDet = -newDet;
+    }
+
+    // Домножение определителя на элемент главной диагонали
+    newDet *= copiedMatrixArg[currRow][currRow];
+
+    // Фикс ошибки калькулирования в исполнении С++ (мафынка не может нолик получить плак-плак)
+    if (abs(copiedMatrixArg[currRow][currRow]) <= 1e-12) {
+        return 0.0;
+    }
+
+    // Диагональное обнуление цифр
+    for (int k = currRow + 1; k < matrixLengthArg; k++) {
+        // множитель для зануления элемента
+        double countToMakeNullElement = copiedMatrixArg[k][currRow] / copiedMatrixArg[currRow][currRow];
+        for (int j = currRow; j < matrixLengthArg; j++) {
+            copiedMatrixArg[k][j] -= countToMakeNullElement * copiedMatrixArg[currRow][j];
+        }
+    }
+    return rowCalculatingFunction(copiedMatrixArg, matrixLengthArg, currRow + 1, newDet);
+}
+
+double matrixToTriangle(double** squareMatrix, int matrixLength) {
+
+    // Копия матрицы
+    double** copiedMatrix = new double* [matrixLength];
+    for (int i = 0; i < matrixLength; i++) {
+        copiedMatrix[i] = new double[matrixLength];
+        for (int j = 0; j < matrixLength; j++) {
+            copiedMatrix[i][j] = squareMatrix[i][j];
+        }
+    }
+
+    double result = rowCalculatingFunction(
+        copiedMatrix,
+        matrixLength,
+        0, // currRow
+        1.0); // startDetCount
+
+    for (int i = 0; i < matrixLength; ++i) {
+        delete[] copiedMatrix[i];
+    }
+    delete[] copiedMatrix;
+
+    return result;
+}
+
+void FiveTask4() {
+    int length = 0;
+    do {
+        cout << "Введите длину для Размерность квадратной матрицы: ";
+        cin >> length;
+        if (length <= 0) {
+            cout << "Число слишком маленькое! Повторите свой ввод!\n";
+        }
+    } while (length <= 0);
+
+    double** matrix = new double* [length];
+    for (int i = 0; i < length; i++) {
+        matrix[i] = new double[length];
+        for (int j = 0; j < length; j++) {
+            cout << "Введите элемент " << j + 1 << " строки " << i + 1 << ": ";
+            cin >> matrix[i][j];
+        }
+    }
+
+    double det = matrixToTriangle(matrix, length);
+    cout << "Определитель матрицы " << length << "x" << length <<" = "<< det << endl;  // Выводим результат
+
+    for (int i = 0; i < length; ++i) {
+        delete[] matrix[i];
+    }
+    delete[] matrix;
+}
+
 int main()
 {
 
@@ -130,9 +242,10 @@ int main()
     // FiveTask2();
 
     // 3 Задание
-    FiveTask3();
+    // FiveTask3();
 
     // 4 Задание
+    FiveTask4();
 
     return 0;
 }
