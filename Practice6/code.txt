@@ -1,0 +1,140 @@
+#include <iostream>
+#include <string>
+#include <Windows.h>
+
+using namespace std;
+// Тема для классов: Лекговые Автомобили (17)
+// Практики: 6, 7
+
+class Veichel {
+
+private:
+    int countOfWheels = 4;
+    int countOfDrivers = 1;
+    int carSpeed = 0;
+
+public:
+    Veichel(string newMark, string newColor, string newDriverName) {
+        mark = newMark;
+        carColor = newColor;
+        driverName = newDriverName;
+        // Конструктор с 3мя параметрами
+        printCarInformation();
+    }
+    Veichel(string newMark, string newColor) {
+        mark = newMark;
+        carColor = newColor;
+        driverName = "default";
+        // Конструктор с 3мя параметрами
+        printCarInformation();
+    }
+    Veichel(string newMark) {
+        mark = newMark;
+        carColor = "default";
+        driverName = "default";
+        // Конструктор с 3мя параметрами
+        printCarInformation();
+    }
+    string mark;
+    string carColor;
+    string driverName;
+
+
+    void printCarInformation() {
+        cout << "Был создан класс автомобиля:\t" << mark
+            << "\nЦвет автомобиля:\t" << carColor
+            << "\nИмя водителя:\t" << driverName
+            << "\nСкорость автомобиля:\t" << carSpeed << "км/ч\n";
+    }
+
+    void printCarInformation(bool status) {
+        cout << "Был создан класс автомобиля:\t" << mark
+            << "\nКоличество колес:\t" << countOfWheels
+            << "\nКоличество водителей:\t" << countOfDrivers
+            << "\nСкорость автомобиля:\t" << carSpeed << "км/ч\n";
+    }
+
+    void setSpeed(int newSpeedCount) {
+        cout << "Изменение скорости с " << carSpeed << " -> " << newSpeedCount << endl;
+        carSpeed = newSpeedCount;
+    }
+
+    int getSpeed() {
+        return carSpeed;
+    }
+
+    void setWheelsCount() {
+        int count = 0;
+
+        do {
+            cout << "Ведите новое количество колес (от 1 до 4): ";
+            cin >> count;
+        } while (count <= 0 || count >= 5);
+        countOfWheels = count;
+    }
+    int getWheelsCount() {
+        return countOfWheels;
+    }
+
+    void setCountOfDrivers(int newCount) {
+        countOfDrivers = newCount;
+    }
+    int getCountOfDrivers() {
+        return countOfDrivers;
+    }
+};
+
+
+// 1а
+class Audi : public Veichel {
+public:
+    Audi(string mark,
+        string color,
+        string nameOfDriver) : Veichel(mark, color, nameOfDriver) {
+        cout << "3 аргумента сработали\n";
+    }
+    Audi(string mark,
+        string color) : Veichel(mark, color) {
+        cout << "2 аргумента сработали\n";
+        setWheelsCount();
+        printCarInformation(false);
+    }
+    Audi(string mark) : Veichel(mark) {
+        cout << "1 аргумент сработали\n";
+        cout << "Количество колес у " << mark << " равняется:\t" << getWheelsCount() << endl;
+    }
+};
+
+//class BMW : Veichel {
+//    BMW() {
+//    }
+//};
+//
+//class Lada : Veichel {
+//    Lada() {
+//    }
+//};
+
+
+
+int main()
+{
+    setlocale(0, "");
+    SetConsoleCP(1251);
+    SetConsoleOutputCP(1251);
+    string name = "Олег Неструев",
+        color = "Красный";
+
+    Audi audiObj{ "audi", name, color };
+    cout << "\n-------------\n";
+    Audi audiObj2{ "audi A6", name};
+    cout << "\n-------------\n";
+    Audi audiObj3{ "audi TT"};
+
+
+
+    cout << "\n\n";
+    audiObj.printCarInformation(false);
+
+}
+
