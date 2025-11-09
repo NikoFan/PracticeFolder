@@ -1,0 +1,24 @@
+// Logs.cpp
+#include "Logs.h"
+
+void Logs::push(const std::vector<std::string>& last) {
+    stack.push_back(last);
+}
+
+void Logs::pop() {
+    if (!stack.empty()) {
+        stack.pop_back();
+    }
+}
+
+std::vector<std::string> Logs::get() {
+    return stack.back(); // последний элемент
+}
+
+int Logs::log_size() {
+    return stack.size();
+}
+
+int Logs::last_size() {
+    return stack.back().size();
+}

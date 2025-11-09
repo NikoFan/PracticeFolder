@@ -1,0 +1,20 @@
+// Logs.h
+#ifndef LOGS_H
+#define LOGS_H
+
+#include <vector>
+#include <string>
+
+class Logs {
+private:
+    std::vector<std::vector<std::string>> stack;
+
+public:
+    void push(const std::vector<std::string>& last);
+    void pop();
+    std::vector<std::string> get(); // возвращает ПОСЛЕДНИЙ лог (один вектор)
+    int log_size();
+    int last_size();
+};
+
+#endif // LOGS_H

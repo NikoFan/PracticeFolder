@@ -1,140 +1,508 @@
 #include <iostream>
 #include <string>
 #include <Windows.h>
+#include <vector>
+#include <conio.h>
+#include "Logs.h"
+#include <map>
+#include <functional>
+#include <limits>
+
 
 using namespace std;
+
+
+// Определение стрелочек на клаве
+#define KEY_UP 72
+#define KEY_DOWN 80
+#define KEY_ENTER 13
 // Тема для классов: Лекговые Автомобили (17)
 // Практики: 6, 7
 
 class Veichel {
 
 private:
-    int countOfWheels = 4;
-    int countOfDrivers = 1;
-    int carSpeed = 0;
+    string engine = "none";
+    string transmission_box = "none";
 
 public:
-    Veichel(string newMark, string newColor, string newDriverName) {
-        mark = newMark;
-        carColor = newColor;
-        driverName = newDriverName;
-        // Конструктор с 3мя параметрами
+    // Деструктор
+    virtual ~Veichel() = default;
+
+    Veichel(string new_mark, string new_color, string new_driver_name) {
+        mark = new_mark;
+        car_color = new_color;
+        driver_name = new_driver_name;
+        cout << "ПОЛНАЯ КОМПЛЕКТАЦИЯ\n";
         printCarInformation();
+        Sleep(3000);
     }
-    Veichel(string newMark, string newColor) {
-        mark = newMark;
-        carColor = newColor;
-        driverName = "default";
-        // Конструктор с 3мя параметрами
+    Veichel(string new_mark, string new_color) {
+        mark = new_mark;
+        car_color = new_color;
+        driver_name = "default";
+        cout << "СРЕДНЯЯ КОМПЛЕКТАЦИЯ\n";
         printCarInformation();
+        Sleep(3000);
     }
-    Veichel(string newMark) {
-        mark = newMark;
-        carColor = "default";
-        driverName = "default";
-        // Конструктор с 3мя параметрами
+    Veichel(string new_mark) {
+        mark = new_mark;
+        car_color = "черная";
+        driver_name = "default";
+        system("cls");
+        cout << "БАЗОВАЯ КОМПЛЕКТАЦИЯ\n";
         printCarInformation();
+        Sleep(3000);
     }
     string mark;
-    string carColor;
-    string driverName;
+    string car_color;
+    string driver_name;
 
 
     void printCarInformation() {
-        cout << "Был создан класс автомобиля:\t" << mark
-            << "\nЦвет автомобиля:\t" << carColor
-            << "\nИмя водителя:\t" << driverName
-            << "\nСкорость автомобиля:\t" << carSpeed << "км/ч\n";
+        cout << "Полная информация о авто:\t" << mark
+            << "\nЦвет автомобиля:\t\t" << car_color
+            << "\nИмя водителя:\t\t\t" << driver_name
+            << "\nДвигатель:\t\t\t" << engine
+            << "\nСелектор КПП:\t\t\t" << transmission_box << endl;
     }
 
     void printCarInformation(bool status) {
-        cout << "Был создан класс автомобиля:\t" << mark
-            << "\nКоличество колес:\t" << countOfWheels
-            << "\nКоличество водителей:\t" << countOfDrivers
-            << "\nСкорость автомобиля:\t" << carSpeed << "км/ч\n";
+        cout << "\nТех. карточка:\t" << mark
+            << "\nДвигатель:\t" << engine
+            << "\nСелектор КПП:\t" << transmission_box << endl;
     }
 
-    void setSpeed(int newSpeedCount) {
-        cout << "Изменение скорости с " << carSpeed << " -> " << newSpeedCount << endl;
-        carSpeed = newSpeedCount;
+    string getModel() {
+        return mark;
     }
 
-    int getSpeed() {
-        return carSpeed;
+    void setDriverName(string name) {
+        driver_name = name;
     }
 
-    void setWheelsCount() {
-        int count = 0;
+    string getDriverName() {
+        return driver_name;
+    }
 
+    void setTransmissionBox() {
+        string choosen_type;
         do {
-            cout << "Ведите новое количество колес (от 1 до 4): ";
-            cin >> count;
-        } while (count <= 0 || count >= 5);
-        countOfWheels = count;
-    }
-    int getWheelsCount() {
-        return countOfWheels;
+            system("cls");
+            cout << "Введите тип КПП (авт / мех): ";
+            cin >> choosen_type;
+            Sleep(500);
+        } while (choosen_type != "авт" && choosen_type != "мех");
+        transmission_box = choosen_type;
+        printCarInformation();
     }
 
-    void setCountOfDrivers(int newCount) {
-        countOfDrivers = newCount;
+    string getTransmissionBox() {
+        return transmission_box;
     }
-    int getCountOfDrivers() {
-        return countOfDrivers;
+
+    void setEngine(vector<string> engins_list) {
+        int choosen_id = 0;
+
+        while (true) {
+            system("cls");
+            cout << "-- ПОДБОР ДВИГАТЕЛЯ ДЛЯ МАШИНЫ --\n";
+            for (int i = 0; i < engins_list.size(); i++) {
+                cout << i + 1 << ". " << engins_list[i] << endl;
+            }
+            cout << "Ведите новое количество колес (от 1 до " << engins_list.size() << "): ";
+            if (cin >> choosen_id) {
+                if (choosen_id >= 1 && choosen_id <= engins_list.size()) {
+                    break;
+                }
+                else {
+                    cout << "Число вне диапазона!\n";
+                    Sleep(1000);
+                }
+            }
+            else {
+                cout << "Вы ввели не число! Попробуйте снова.\n";
+                cin.clear(); // сброс флага ошибки
+                cin.ignore((numeric_limits<streamsize>::max)(), '\n'); // очистка буфера
+                Sleep(1000);
+            }
+
+        }
+        engine = engins_list[choosen_id-1];
+    }
+    string getEngine() {
+        return engine;
     }
 };
 
-
 // 1а
 class Audi : public Veichel {
+private:
+    string factoryName = "Ингольштадт";
+    string creatorName = "Аугуст Хорьх";
 public:
     Audi(string mark,
         string color,
         string nameOfDriver) : Veichel(mark, color, nameOfDriver) {
-        cout << "3 аргумента сработали\n";
     }
     Audi(string mark,
         string color) : Veichel(mark, color) {
-        cout << "2 аргумента сработали\n";
-        setWheelsCount();
-        printCarInformation(false);
     }
     Audi(string mark) : Veichel(mark) {
-        cout << "1 аргумент сработали\n";
-        cout << "Количество колес у " << mark << " равняется:\t" << getWheelsCount() << endl;
+    }
+
+    string getFactoryName() {
+        return factoryName;
+    }
+    string getCreatorName() {
+        return creatorName;
     }
 };
 
-//class BMW : Veichel {
-//    BMW() {
-//    }
-//};
-//
-//class Lada : Veichel {
-//    Lada() {
-//    }
-//};
+class BMW : public Veichel {
+private:
+    string factoryName = "Мюнхен";
+    string creatorName = "Карл Рапп";
+public:
+    BMW(string mark,
+        string color,
+        string nameOfDriver) : Veichel(mark, color, nameOfDriver) {
+    }
+    BMW(string mark,
+        string color) : Veichel(mark, color) {
+    }
+    BMW(string mark) : Veichel(mark) {
+    }
+
+    string getFactoryName() {
+        return factoryName;
+    }
+    string getCreatorName() {
+        return creatorName;
+    }
+};
+
+class Lada : public Veichel {
+private:
+    string factoryName = "Тольятти";
+    string creatorName = "ВАЗ";
+public:
+    Lada(string mark,
+        string color,
+        string nameOfDriver) : Veichel(mark, color, nameOfDriver) {
+    }
+    Lada(string mark,
+        string color) : Veichel(mark, color) {
+    }
+    Lada(string mark) : Veichel(mark) {
+    }
+
+    string getFactoryName() {
+        return factoryName;
+    }
+    string getCreatorName() {
+        return creatorName;
+    }
+};
 
 
+// Автопарк
+vector<unique_ptr<Veichel>> auto_park;
+
+// Логгирование
+Logs logger;
+
+int active_car_id;
+
+vector<string>
+    typesOfMainActions{ "Создать автомобиль", "Ввести имя", "Подробнее про машины", "Выход" },
+    typesOfVeichel{ "Audi", "BMW", "Лада","Назад" },
+    typesOfNameEnterActions{ "Создать новое", "Вставить системное", "Назад" },
+    typesOfVeichelActions{ "Изменить данные", "Посмотреть данные", "Назад" },
+    typesOdChangeActions{ "Изменить Двигатель", "Изменить КПП", "Назад" },
+    typesOfShowingData{ "Карточка автомобиля", "Данные о производителе", "Назад" },
+    currentVector;
+
+void printVectorsData(vector<string> data, int cursorIndex, string cursor) {
+    // Определение максимального по длине слова
+    int maxLen = 0;
+    for (string i : data) {
+        if (i.length() > maxLen) {
+            maxLen = i.length();
+        }
+    }
+
+    for (int i = 0; i < data.size(); i++) {
+        cout << "| " << string((maxLen - data[i].length()) / 2, ' ') << data[i] << string((maxLen - data[i].length()) / 2 + ((maxLen - data[i].length()) % 2), ' ') << " |";
+        if (i == cursorIndex) {
+            cout << cursor;
+        }
+        cout << "\n";
+    }
+}
+
+void increaseIndex(int& index, bool action) {
+    if (action) {
+        if (index + 1 <= logger.last_size()) {
+            index++;
+        }
+        return;
+    }
+    if (index - 1 >= 0) {
+        index--;
+    }
+}
+
+void create_new_car(char auto_name) {
+
+    string car_type;
+    do {
+        system("cls");
+        cout << "Введите марку авто (больше 1 символа): ";
+        getline(cin, car_type);
+    } while (car_type.size() < 1);
+
+    unique_ptr<Veichel> a;
+    switch (auto_name) {
+        case('A'):
+            a = make_unique<Audi>(car_type);
+            a->setEngine({
+                "2.0 TFSI", "3.0 TFSI", "5.2 V10 FSI",
+                "1.9 TDi", "3.0 V6 TDi", "EA288 2.0 TDi" });
+            a->setTransmissionBox();
+            auto_park.push_back(move(a));
+            break;
+        case('B'):
+            a = make_unique<BMW>(car_type);
+            a->setEngine({
+                "BMW N52", "BMW B58", "BMW N20",
+                "BMW M57", "BMW N47", "BMW B48"});
+            a->setTransmissionBox();
+            auto_park.push_back(move(a));
+            break;
+        case('L'):
+            a = make_unique<Lada>(car_type);
+            a->setEngine({
+                "ВАЗ-21129", "ВАЗ-11182", "ВАЗ-21179-77"});
+            a->setTransmissionBox();
+            auto_park.push_back(move(a));
+            break;
+    }
+}
+
+int take_active_car_id(string active_title) {
+    system("cls");
+    if (auto_park.size() == 0) {
+        cout << "У вас нет ни одного автомобиля!\nЧЕРЕЗ 3 СЕКУНДЫ ВЕРНЕТЕСЬ НА ГЛАВНЫЙ ЭКРАН!";
+        Sleep(3000);
+        return -1;
+    }
+    int car_id;
+    do {
+        cout << active_title << endl;
+        for (int i = 0; i < auto_park.size(); i++) {
+            cout << i + 1 << ". " << auto_park[i]->getModel() << endl;
+        }
+        cout << "Введите номер строки с нужным именем авто: ";
+        cin >> car_id;
+
+        if (car_id <= 0 || car_id > auto_park.size()) {
+            cout << "Неверный ввод! Число должно быть от " << 1 << " до " << auto_park.size() << endl;
+            Sleep(2000);
+            system("cls");
+        }
+    } while (car_id <= 0 || car_id > auto_park.size());
+    car_id--;
+    return car_id;
+}
+
+void create_new_name() {
+    // Функция создания имени
+    system("cls");
+
+    string name;
+    int row_number = take_active_car_id("-- СОЗДАНИЕ НОВОГО ИМЕНИ --");
+    if (row_number == -1) {
+        return;
+    }
+
+    do {
+        system("cls");
+        cout << "Выбраный автомобиль:\t" << auto_park[row_number]->getModel() << endl;
+        cout << "Введите имя для водителя (больше 1 символа): ";
+        getline(cin, name);
+
+    } while (name.length() < 1);
+
+
+    // Установка водителю нового имени
+    auto_park[row_number]->setDriverName(name);
+
+    auto_park[row_number]->printCarInformation();
+    Sleep(5000);
+}
+
+void set_system_name() {
+    // Функция установки стандартного имени
+    system("cls");
+    int row_number = take_active_car_id("-- УСТАНОВКА СИСТЕМНОГО ИМЕНИ --");
+    if (row_number == -1) {
+        return;
+    }
+
+    // Установка системного имени
+    auto_park[row_number]->setDriverName("SYSTEM DEFAULT");
+
+    auto_park[row_number]->printCarInformation();
+    Sleep(5000);
+}
+
+void print_all_cars() {
+    int row_index = take_active_car_id("-- АВТОПАРК --");
+    if (row_index == -1) {
+        return;
+    }
+
+    active_car_id = row_index;
+    logger.push(typesOfVeichelActions);
+
+}
 
 int main()
 {
     setlocale(0, "");
     SetConsoleCP(1251);
     SetConsoleOutputCP(1251);
-    string name = "Олег Неструев",
-        color = "Красный";
 
-    Audi audiObj{ "audi", name, color };
-    cout << "\n-------------\n";
-    Audi audiObj2{ "audi A6", name};
-    cout << "\n-------------\n";
-    Audi audiObj3{ "audi TT"};
+    bool programLiveStatus = true;
+    string
+        title = "-- СОЗДАЙТЕ АВТОМОБИЛЬ МЕЧТЫ --\n",
+        cursor = "    <-";
+
+    int indexOfCurrentRow = 0,
+        keyInput = 0;
+
+    // Отслеживание массивов
+    map < string, vector<string>> roadMap{
+        {typesOfMainActions[0], typesOfVeichel },
+        {typesOfMainActions[1], typesOfNameEnterActions },
+        {typesOfVeichelActions[0], typesOdChangeActions },
+        {typesOfVeichelActions[1], typesOfShowingData },
+        {typesOfVeichelActions[0], typesOdChangeActions },
+        {typesOfVeichelActions[1], typesOfShowingData }
+    };
+
+    // Действия
+    map < string, function<void()>> actions {
+        {typesOfNameEnterActions[0], create_new_name},
+        {typesOfNameEnterActions[1], set_system_name},
+
+        {typesOfVeichel[0], []() { create_new_car('A'); }},
+        {typesOfVeichel[1], []() { create_new_car('B'); }},
+        {typesOfVeichel[2], []() { create_new_car('L'); }},
+
+        {typesOfMainActions[2], print_all_cars},
+
+        {typesOfShowingData[0], []() {
+            auto_park[active_car_id]->printCarInformation();
+            auto_park[active_car_id]->printCarInformation(false);
+            Sleep(2000); }}, // Карточка автомобиля
+
+        {typesOfShowingData[1], []() {
+            Veichel* car = auto_park[active_car_id].get();
+            if (Audi* car_example = dynamic_cast<Audi*>(car)) {
+                cout << "Фабрика:\t" << car_example->getFactoryName()
+                    <<"\nПроизводитель:\t" << car_example->getCreatorName();
+            }
+            else if (BMW* car_example = dynamic_cast<BMW*>(car)) {
+                cout << "Фабрика:\t" << car_example->getFactoryName()
+                    << "\nПроизводитель:\t" << car_example->getCreatorName();
+            }
+            else if (Lada* car_example = dynamic_cast<Lada*>(car)) {
+                cout << "Фабрика:\t" << car_example->getFactoryName()
+                    << "\nПроизводитель:\t" << car_example->getCreatorName();
+            }
+            Sleep(2000); }}, // Данные о производителе
+
+        {typesOdChangeActions[0], []() {
+            Veichel* car = auto_park[active_car_id].get();
+            vector<string> engins = {
+                "2.0 TFSI", "3.0 TFSI", "5.2 V10 FSI",
+                "1.9 TDi", "3.0 V6 TDi", "EA288 2.0 TDi" };
+            if (BMW* car_example = dynamic_cast<BMW*>(car)) {
+                engins = {
+                "BMW N52", "BMW B58", "BMW N20",
+                "BMW M57", "BMW N47", "BMW B48" };
+            }
+            else if (Lada* car_example = dynamic_cast<Lada*>(car)) {
+                engins = {
+                "ВАЗ-21129", "ВАЗ-11182", "ВАЗ-21179-77" };
+            }
+            auto_park[active_car_id]->setEngine(engins);
+            Sleep(2000); }}, // Изменить двигатель
+
+        {typesOdChangeActions[1], []() {
+            auto_park[active_car_id]->setTransmissionBox();
+            Sleep(2000); }} // Изменить Кпп
+
+    };
 
 
 
-    cout << "\n\n";
-    audiObj.printCarInformation(false);
+    // Логгирование действий
+    logger.push(typesOfMainActions);
+
+    while (programLiveStatus) {
+        system("cls");
+        // Определение текущего массива
+        currentVector = logger.get();
+        cout << title;
+        printVectorsData(
+            currentVector,
+            indexOfCurrentRow,
+            cursor);
+        keyInput = 0;
+        // Считывание клавиши
+        switch ((keyInput = _getch())) {
+        case KEY_UP:
+            increaseIndex(indexOfCurrentRow, false);
+            break;
+        case KEY_DOWN:
+            increaseIndex(indexOfCurrentRow, true);
+            break;
+        case KEY_ENTER:
+            if (indexOfCurrentRow == (logger.last_size()-1)) {
+                // Выход / Назад
+                if (currentVector == typesOfMainActions) {
+                    cout << "Прекращение работы!\n";
+                    programLiveStatus = false;
+                }
+                else if (logger.log_size() > 1) {
+                    logger.pop();
+                    currentVector = logger.get();
+                }
+            }
+            else {
+                if (roadMap.count(currentVector[indexOfCurrentRow])) {
+                    logger.push(roadMap[currentVector[indexOfCurrentRow]]);
+                }
+                else if (actions.count(currentVector[indexOfCurrentRow])){
+                    actions[currentVector[indexOfCurrentRow]]();
+                }
+                else {
+                    cout << "Skip";
+                }
+            }
+            indexOfCurrentRow = 0;
+
+            break;
+        default:
+            break;
+        }
+
+
+
+    }
 
 }
 
