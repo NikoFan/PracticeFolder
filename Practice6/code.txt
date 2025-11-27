@@ -22,12 +22,16 @@ using namespace std;
 class Veichel {
 
 protected:
+    string LadaUID_number = "6263_00_777";
     string engine = "none";
     string transmission_box = "none";
 
 public:
     // Деструктор
     virtual ~Veichel() = default;
+
+
+    // virtual string getCarNuberExample() const = 0;
 
     Veichel(string new_mark, string new_color, string new_driver_name) {
         mark = new_mark;
@@ -157,6 +161,11 @@ public:
     string getCreatorName() {
         return creatorName;
     }
+
+    // Переопределение виртуалного метода
+    /*string getCarNuberExample() const override {
+        return "о292ке";
+    }*/
 };
 
 class BMW : public Veichel {
@@ -183,6 +192,8 @@ public:
 };
 
 class Lada : public Veichel {
+protected:
+    using Veichel::LadaUID_number;
 private:
     string factoryName = "Тольятти";
     string creatorName = "ВАЗ";
@@ -209,20 +220,17 @@ public:
     }
 };
 
-class SmallCar : private Lada {
+class SmallCar : protected Lada {
 private:
     string engine_name;
 public:
     using Lada::Lada;
     void print_data() {
-        cout << "\nВывод из SMALL CAR:\tengine: " << getModel();
+        cout << "\nВывод из SMALL CAR:\Lada UID: " << LadaUID_number;
     }
 
 };
 
-class HugeCar : Lada {
-
-};
 
 
 // Автопарк
@@ -234,13 +242,13 @@ Logs logger;
 int active_car_id;
 
 vector<string>
-    typesOfMainActions{ "Создать автомобиль", "Ввести имя", "Подробнее про машины", "Выход" },
-    typesOfVeichel{ "Audi", "BMW", "Лада","Назад" },
-    typesOfNameEnterActions{ "Создать новое", "Вставить системное", "Назад" },
-    typesOfVeichelActions{ "Изменить данные", "Посмотреть данные", "Назад" },
-    typesOdChangeActions{ "Изменить Двигатель", "Изменить КПП", "Назад" },
-    typesOfShowingData{ "Карточка автомобиля", "Данные о производителе", "Назад" },
-    currentVector;
+typesOfMainActions{ "Создать автомобиль", "Ввести имя", "Подробнее про машины", "Выход" },
+typesOfVeichel{ "Audi", "BMW", "Лада","Назад" },
+typesOfNameEnterActions{ "Создать новое", "Вставить системное", "Назад" },
+typesOfVeichelActions{ "Изменить данные", "Посмотреть данные", "Назад" },
+typesOdChangeActions{ "Изменить Двигатель", "Изменить КПП", "Назад" },
+typesOfShowingData{ "Карточка автомобиля", "Данные о производителе", "Назад" },
+currentVector;
 
 void printVectorsData(vector<string> data, int cursorIndex, string cursor) {
     // Определение максимального по длине слова
@@ -522,8 +530,9 @@ int main()
 
     system("cls");
 
-    SmallCar lada_small_car {"Лада Калина"};
+    SmallCar lada_small_car{"Lada Calina"};
     lada_small_car.print_data();
+
 
 }
 
