@@ -21,7 +21,7 @@ using namespace std;
 
 class Veichel {
 
-private:
+protected:
     string engine = "none";
     string transmission_box = "none";
 
@@ -128,7 +128,7 @@ public:
             }
 
         }
-        engine = engins_list[choosen_id-1];
+        engine = engins_list[choosen_id - 1];
     }
     string getEngine() {
         return engine;
@@ -187,6 +187,10 @@ private:
     string factoryName = "Тольятти";
     string creatorName = "ВАЗ";
 public:
+    using Veichel::Veichel;
+
+    Lada() = default;
+
     Lada(string mark,
         string color,
         string nameOfDriver) : Veichel(mark, color, nameOfDriver) {
@@ -203,6 +207,21 @@ public:
     string getCreatorName() {
         return creatorName;
     }
+};
+
+class SmallCar : private Lada {
+private:
+    string engine_name;
+public:
+    using Lada::Lada;
+    void print_data() {
+        cout << "\nВывод из SMALL CAR:\tengine: " << getModel();
+    }
+
+};
+
+class HugeCar : Lada {
+
 };
 
 
@@ -243,7 +262,7 @@ void printVectorsData(vector<string> data, int cursorIndex, string cursor) {
 
 void increaseIndex(int& index, bool action) {
     if (action) {
-        if (index + 1 <= logger.last_size()) {
+        if (index + 1 < logger.last_size()) {
             index++;
         }
         return;
@@ -264,29 +283,29 @@ void create_new_car(char auto_name) {
 
     unique_ptr<Veichel> a;
     switch (auto_name) {
-        case('A'):
-            a = make_unique<Audi>(car_type);
-            a->setEngine({
-                "2.0 TFSI", "3.0 TFSI", "5.2 V10 FSI",
-                "1.9 TDi", "3.0 V6 TDi", "EA288 2.0 TDi" });
-            a->setTransmissionBox();
-            auto_park.push_back(move(a));
-            break;
-        case('B'):
-            a = make_unique<BMW>(car_type);
-            a->setEngine({
-                "BMW N52", "BMW B58", "BMW N20",
-                "BMW M57", "BMW N47", "BMW B48"});
-            a->setTransmissionBox();
-            auto_park.push_back(move(a));
-            break;
-        case('L'):
-            a = make_unique<Lada>(car_type);
-            a->setEngine({
-                "ВАЗ-21129", "ВАЗ-11182", "ВАЗ-21179-77"});
-            a->setTransmissionBox();
-            auto_park.push_back(move(a));
-            break;
+    case('A'):
+        a = make_unique<Audi>(car_type);
+        a->setEngine({
+            "2.0 TFSI", "3.0 TFSI", "5.2 V10 FSI",
+            "1.9 TDi", "3.0 V6 TDi", "EA288 2.0 TDi" });
+        a->setTransmissionBox();
+        auto_park.push_back(move(a));
+        break;
+    case('B'):
+        a = make_unique<BMW>(car_type);
+        a->setEngine({
+            "BMW N52", "BMW B58", "BMW N20",
+            "BMW M57", "BMW N47", "BMW B48" });
+        a->setTransmissionBox();
+        auto_park.push_back(move(a));
+        break;
+    case('L'):
+        a = make_unique<Lada>(car_type);
+        a->setEngine({
+            "ВАЗ-21129", "ВАЗ-11182", "ВАЗ-21179-77" });
+        a->setTransmissionBox();
+        auto_park.push_back(move(a));
+        break;
     }
 }
 
@@ -393,7 +412,7 @@ int main()
     };
 
     // Действия
-    map < string, function<void()>> actions {
+    map < string, function<void()>> actions{
         {typesOfNameEnterActions[0], create_new_name},
         {typesOfNameEnterActions[1], set_system_name},
 
@@ -412,7 +431,7 @@ int main()
             Veichel* car = auto_park[active_car_id].get();
             if (Audi* car_example = dynamic_cast<Audi*>(car)) {
                 cout << "Фабрика:\t" << car_example->getFactoryName()
-                    <<"\nПроизводитель:\t" << car_example->getCreatorName();
+                    << "\nПроизводитель:\t" << car_example->getCreatorName();
             }
             else if (BMW* car_example = dynamic_cast<BMW*>(car)) {
                 cout << "Фабрика:\t" << car_example->getFactoryName()
@@ -471,7 +490,7 @@ int main()
             increaseIndex(indexOfCurrentRow, true);
             break;
         case KEY_ENTER:
-            if (indexOfCurrentRow == (logger.last_size()-1)) {
+            if (indexOfCurrentRow == (logger.last_size() - 1)) {
                 // Выход / Назад
                 if (currentVector == typesOfMainActions) {
                     cout << "Прекращение работы!\n";
@@ -486,7 +505,7 @@ int main()
                 if (roadMap.count(currentVector[indexOfCurrentRow])) {
                     logger.push(roadMap[currentVector[indexOfCurrentRow]]);
                 }
-                else if (actions.count(currentVector[indexOfCurrentRow])){
+                else if (actions.count(currentVector[indexOfCurrentRow])) {
                     actions[currentVector[indexOfCurrentRow]]();
                 }
                 else {
@@ -499,10 +518,12 @@ int main()
         default:
             break;
         }
-
-
-
     }
+
+    system("cls");
+
+    SmallCar lada_small_car {"Лада Калина"};
+    lada_small_car.print_data();
 
 }
 
